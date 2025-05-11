@@ -1,0 +1,32 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.folder {
+  text-align: left;
+  width: 300px;
+  padding-left: 2rem;
+}
+
+.folder-name {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px;
+  background-color: #c7c7c7;
+  margin: 3px 0px;
+  cursor: pointer;
+}
+
+.file {
+  position: relative;
+  margin: 8px 0px;
+  padding: 6px;
+}
+
+.btns {
+  display: flex;
+  gap: 5px;
+}

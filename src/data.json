@@ -1,0 +1,43 @@
+{
+  "id": 1,
+  "name": "root",
+  "isFolder": true,
+  "children": [
+    {
+      "id": 2,
+      "name": "src",
+      "isFolder": true,
+      "children": [
+        {
+          "id": 3,
+          "name": "components",
+          "isFolder": true,
+          "children": [
+            {
+              "id": 4,
+              "name": "fileExplorer.js",
+              "isFolder": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "test",
+      "isFolder": true,
+      "children": [
+        {
+          "id": 6,
+          "name": "testA.test.js",
+          "isFolder": false
+        },
+        {
+          "id": 7,
+          "name": "testB.test.js",
+          "isFolder": false
+        }
+      ]
+    }
+  ]
+}
