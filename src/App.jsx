@@ -7,17 +7,35 @@ import useTraverseTree from "./hooks/useTraverseTree";
 function App() {
   const [data, setData] = useState(explorerData);
 
-  const { insertNode } = useTraverseTree();
+  const { insertNode, deleteNode, updateNode } = useTraverseTree();
 
   const handleInsertNode = (folderId, item, isFolder) => {
-    const updatedData = insertNode(explorerData, folderId, item, isFolder);
-    console.log("updatedData: ", updatedData);
+    const updatedData = insertNode(data, folderId, item, isFolder);
+    setData(updatedData);
+  };
+
+  const handleDeleteNode = (folderId) => {
+    const updatedData = deleteNode(data, folderId);
+    setData(updatedData);
+  };
+
+  const handleUpdateNode = (folderId, item) => {
+    const updatedData = updateNode(data, folderId, item);
     setData(updatedData);
   };
 
   return (
     <>
-      <FileExplorer data={data} handleInsertNode={handleInsertNode} />
+      {data ? (
+        <FileExplorer
+          data={data}
+          handleInsertNode={handleInsertNode}
+          handleDeleteNode={handleDeleteNode}
+          handleUpdateNode={handleUpdateNode}
+        />
+      ) : (
+        <p>Whole tree was deleted!</p>
+      )}
     </>
   );
 }

@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { FileExplorer } from "./FileExplorer";
-// import fullData from "../data.json";
 
-export const Folder = ({ data, handleInsertNode }) => {
+export const Folder = ({
+  data,
+  handleInsertNode,
+  handleDeleteNode,
+  handleUpdateNode,
+}) => {
   const [open, setOpen] = useState(false);
   const [showInput, setShowInput] = useState({
     isVisible: false,
     type: "",
     text: "",
   });
+  const [updateNode, setUpdateNode] = useState(false);
 
   const addInput = (e, type) => {
     setShowInput((prev) => ({ ...prev, type, isVisible: true }));
@@ -17,23 +22,29 @@ export const Folder = ({ data, handleInsertNode }) => {
   };
 
   const handleInput = (e) => {
+    e.stopPropagation();
     setShowInput((prev) => ({ ...prev, text: e.target.value }));
   };
 
-  const handleBlur = () => {
-    if (showInput.text === "") {
-      setShowInput((prev) => ({ ...prev, isVisible: false }));
-    }
+  const handleBlur = (e) => {
+    e.stopPropagation();
+    setShowInput((prev) => ({ ...prev, isVisible: false }));
+    setUpdateNode(false);
   };
 
-  const handleEnter = (e) => {
-    if (e.keyCode === 13) {
-      // console.log("enter...", e);
-      // const newData = JSON.parse(JSON.stringify(fullData));
-      // console.log("data: ", id);
-      // console.log("full data: ", newData);
-
+  const handleEnter = (e, type) => {
+    if (e.keyCode === 13 && type === "newNode") {
       handleInsertNode(data.id, showInput.text, showInput.type === "folder");
+      setShowInput({
+        isVisible: false,
+        type: "",
+        text: "",
+      });
+    }
+
+    if (e.keyCode === 13 && type === "oldNode") {
+      setUpdateNode(false);
+      handleUpdateNode(data.id, showInput.text);
       setShowInput({
         isVisible: false,
         type: "",
@@ -42,13 +53,39 @@ export const Folder = ({ data, handleInsertNode }) => {
     }
   };
 
+  const editInput = (e) => {
+    e.stopPropagation();
+    setUpdateNode(true);
+  };
+
+  const deleteInput = (e, nodeId) => {
+    e.stopPropagation();
+    handleDeleteNode(nodeId);
+  };
+
   return (
     <div className="folder">
       <div className="folder-name" onClick={() => setOpen(!open)}>
-        <span>📂 {data.name}</span>
+        <span>
+          📂
+          {updateNode ? (
+            <input
+              autoFocus
+              type="text"
+              onChange={(e) => handleInput(e)}
+              onBlur={(e) => handleBlur(e)}
+              onKeyDown={(e) => handleEnter(e, "oldNode")}
+            />
+          ) : (
+            data.name
+          )}
+        </span>
+
         <div className="btns">
           <button onClick={(e) => addInput(e, "folder")}>+Folder</button>
           <button onClick={(e) => addInput(e, "file")}>+File</button>
+          <button onClick={(e) => editInput(e, data.id)}>🖊</button>
+          <button onClick={(e) => deleteInput(e, data.id)}>❌</button>
         </div>
       </div>
       {showInput.isVisible && (
@@ -58,19 +95,23 @@ export const Folder = ({ data, handleInsertNode }) => {
             autoFocus
             type="text"
             onChange={(e) => handleInput(e)}
-            onBlur={handleBlur}
-            onKeyDown={(e) => handleEnter(e)}
+            onBlur={(e) => handleBlur(e)}
+            onKeyDown={(e) => handleEnter(e, "newNode")}
           />
         </div>
       )}
       {open &&
-        data?.children.map((node) => (
-          <FileExplorer
-            data={node}
-            key={node.id}
-            handleInsertNode={handleInsertNode}
-          />
-        ))}
+        data?.children
+          ?.filter((node) => node)
+          ?.map((node) => (
+            <FileExplorer
+              data={node}
+              key={node.id}
+              handleInsertNode={handleInsertNode}
+              handleDeleteNode={handleDeleteNode}
+              handleUpdateNode={handleUpdateNode}
+            />
+          ))}
     </div>
   );
 };
